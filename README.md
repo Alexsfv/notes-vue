@@ -1,6 +1,6 @@
 # notes-vue  
 
-**[Ссылка на приложение](notes-vue-alexsfv.firebaseapp.com)**
+**[Ссылка на приложение](https://notes-vue-alexsfv.firebaseapp.com)**
 
 ## При разработке использовались:
   - Vue-CLI, Vuex
