@@ -1,14 +1,14 @@
 <template>
     <div class="new-note">
         <label class="text">Title</label>
-        <input type="text" v-model="note.title" />
+        <input type="text" v-model.lazy="title" />
 
         <label class="text">Description</label>
-        <textarea v-model="note.descr"></textarea>
+        <textarea v-model.lazy="description"></textarea>
 
         <label class="text">Priority</label>
         <div>
-            <a-radio-group default-value="low" v-model="note.priority" button-style="solid">
+            <a-radio-group default-value="low" v-model="priority" button-style="solid">
                 <a-radio-button value="low" > Low </a-radio-button>
                 <a-radio-button value="medium" > Medium </a-radio-button>
                 <a-radio-button value="hight" > Hight </a-radio-button>
@@ -20,19 +20,59 @@
 </template>
 
 <script>
+import getRandomId from '../mixins/getRandomId'
+
 export default {
-    props: {
-        note: {
-            type: Object,
-            required: true,
+    mixins: [getRandomId],
+    computed: {
+        priority: {
+            set (value) {
+                this.$store.dispatch('newNote/setPriority', value)
+            },
+            get () {
+                return this.$store.getters['newNote/getPriority']
+            },
         },
-    },
-    data() {
-        return {};
+        title: {
+            set (value) {
+                this.$store.dispatch('newNote/setTitle', value)
+            },
+            get () {
+                return this.$store.getters['newNote/getTitle']
+            },
+        },
+        description: {
+            set (value) {
+                this.$store.dispatch('newNote/setDescription', value)
+            },
+            get () {
+                return this.$store.getters['newNote/getDescription']
+            },
+        }
     },
     methods: {
         addNote() {
-            this.$emit("addNote");
+            const { title, descr, priority } = this.$store.getters['newNote/getNoteFields']
+            if (title === '') {
+                this.$store.dispatch('message/setMessage', 'title cant be blank!')
+                return null
+            }
+            const id = this.$getRandomId(this.$store.getters.getNotesIds)
+            const newNote = {
+                id,
+                title,
+                descr,
+                date: new Date(Date.now()).toLocaleString(),
+                priority,
+                edit: {
+                    isEditing: false,
+                    hasEdited: false,
+                    editedDate: ''
+                }
+            }
+            this.$store.dispatch('addNote', newNote)
+            this.$store.dispatch('newNote/resetFields')
+            this.$store.dispatch('message/setMessage', null)
         },
     },
 };

@@ -1,7 +1,7 @@
 <template>
     <div class="notes">
         <div 
-            v-for="(note, i) in notes" 
+            v-for="(note, i) in $store.getters.getSearchNotes" 
             :key="i" class="note" 
             :class="{ 
                 full: !grid,
@@ -16,7 +16,7 @@
                 <p v-if="!note.edit.isEditing">{{ note.title }}</p>
                 <input 
                     v-else 
-                    v-model="editTitle" 
+                    v-model="edit.title" 
                     type="text" 
                     class="edit-input-title"
                 >
@@ -33,14 +33,14 @@
                     @click="saveEditData()"
                 />
 
-                <p style="cursor: pointer;" @click="removeNote(i)" class="deleteBtn">x</p>
+                <p style="cursor: pointer;" @click="removeNote(note.id)" class="deleteBtn">x</p>
             </div>
 
             <div class="note-body">
                 <p v-if="!note.edit.isEditing">{{ note.descr }}</p>
                 <textarea 
                     v-else
-                    v-model="editDescription"
+                    v-model="edit.description"
                     class="edit-input-description"
                 />
                 <span>{{ note.edit.editedDate || note.date }}</span>
@@ -57,10 +57,6 @@ import { Icon } from 'ant-design-vue'
 
 export default {
     props: {
-        notes: {
-            type: Array,
-            required: true
-        },
         grid: {
             type: Boolean,
             required: true
@@ -68,40 +64,41 @@ export default {
     },
     data() {
         return {
-            editId: null,
-            editTitle: '',
-            editDescription: '',
+            edit: {
+                id: null,
+                title: '',
+                description: '',
+            },
         }
     },
     methods: {
-        removeNote(index) {
-            console.log(`Note id - ${index} removed!`);
-            this.$emit('remove', index)
+        removeNote(removeId) {
+            this.$store.dispatch('removeNote', removeId)
         },
         cleanEditData() {
-            this.editId = ''
-            this.editTitle = ''
-            this.editDescription = ''
+            this.edit.id = ''
+            this.edit.title = ''
+            this.edit.description = ''
         },
         startEditData(editNote) {
             const { id, title, descr } = editNote
             this.cleanEditData()
-            this.editId = id
-            this.editTitle = title
-            this.editDescription = descr
+            this.edit.id = id
+            this.edit.title = title
+            this.edit.description = descr
 
-            this.$emit('changeNoteEditStatus', editNote)
+            this.$store.dispatch('changeNoteEditStatus', editNote.id)
         },
         saveEditData() {
             const changes = {
-                id: this.editId,
-                title: this.editTitle,
-                description: this.editDescription,
+                id: this.edit.id,
+                title: this.edit.title,
+                description: this.edit.description,
                 date: new Date(Date.now()).toLocaleString()
             }
-            this.$emit('changeData', changes)
-        }
-    }
+            this.$store.dispatch('saveEditData', changes)
+        },
+    },
 }
 </script>
 
@@ -174,9 +171,15 @@ export default {
     }
     &.medium {
         box-shadow: 0 3px 5px 5px rgba(204, 204, 204, 0.096), inset 0 0 12px 0 rgba(229, 255, 0, 0.753);
+        &:hover {
+            box-shadow: 0 0 15px 2px rgba(229, 255, 0, 0.753);
+        }
     }
     &.hight {
         box-shadow: 0 3px 5px 5px rgba(204, 204, 204, 0.096), inset 0 0 12px 0 rgba(255, 38, 0, 0.753);
+        &:hover {
+            box-shadow: 0 0 15px 2px rgba(255, 38, 0, 0.753);
+        }
     }
     &:hover {
         transform: translateY(-8px);

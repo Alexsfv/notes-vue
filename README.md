@@ -1,8 +1,11 @@
 # notes-vue  
 
+**[Ссылка на приложение](notes-vue-alexsfv.firebaseapp.com)**
+
 ## При разработке использовались:
   - Vue-CLI
   - Ant Design
+  - Firebase Hosting
 
 SPA, основные возможности:  
 

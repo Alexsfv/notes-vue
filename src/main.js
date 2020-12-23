@@ -5,6 +5,7 @@ import ARadioButton from 'ant-design-vue/lib/radio/RadioButton'
 import ARadioGroup from 'ant-design-vue/lib/radio/Group'
 import './assets/scss/main.scss'
 import 'ant-design-vue/dist/antd.css'
+import store from './store/index'
 
 Vue.component(AIcon.name, AIcon)
 Vue.component(ARadioButton.name, ARadioButton)
@@ -14,4 +15,5 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
+  store
 }).$mount('#app')
