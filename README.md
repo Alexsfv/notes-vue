@@ -3,7 +3,7 @@
 **[Ссылка на приложение](notes-vue-alexsfv.firebaseapp.com)**
 
 ## При разработке использовались:
-  - Vue-CLI
+  - Vue-CLI, Vuex
   - Ant Design
   - Firebase Hosting
 
